@@ -1,0 +1,30 @@
+{
+  "name": "CoHeart Foundation Workspace",
+  "short_name": "CoHeart",
+  "description": "Programme delivery, people and MIS in one workspace.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f4f6f9",
+  "theme_color": "#2d6338",
+  "lang": "en",
+  "scope": "/",
+  "id": "/",
+  "icons": [
+    {
+      "src": "assets/brand/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/brand/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/brand/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
