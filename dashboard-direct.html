@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>CoHeart Workspace — Dashboard Direct Formats Prototype</title>
+  <link rel="icon" type="image/svg+xml" href="assets/brand/favicon.svg">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/brand/apple-touch-icon-180.png">
+  <link rel="manifest" href="assets/brand/manifest.webmanifest">
+  <meta name="theme-color" content="#2d6338">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="CoHeart">
+  <link rel="stylesheet" href="vendor/fontawesome/css/all.min.css">
+  <link rel="stylesheet" href="app.css">
+  <script src="vendor/lucide/lucide.min.js"></script>
+  <script src="app.js" defer></script>
+  <style>
+    :root {
+      --primary: #047857;
+      --primary-hover: #065f46;
+      --primary-soft: #ecfdf5;
+      --accent: #10b981;
+      --sidebar-bg: #032b20;
+      --sidebar-hover: #064030;
+      --sidebar-active: #047857;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --bg: #f8fafc;
+      --radius-md: 14px;
+      --radius-lg: 18px;
+      --radius-xl: 22px;
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.07);
+    }
+
+    body.dark-theme {
+      --primary: #10b981;
+      --primary-hover: #34d399;
+      --primary-soft: #064e3b;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --border: #334155;
+      --bg: #0f172a;
+      --sidebar-bg: #021a13;
+      --sidebar-hover: #042f23;
+      --sidebar-active: #047857;
+    }
+    body.dark-theme .primary-card { background: #1e293b; border-color: var(--border); color: #f1f5f9; }
+    body.dark-theme .widget-container { background: #1e293b; border-color: var(--border); }
+    body.dark-theme .quick-format-tile { background: #0f172a; border-color: var(--border); }
+    body.dark-theme .btn-outline { background: #1e293b; border-color: var(--border); color: #f1f5f9; }
+    body.dark-theme .draft-alert { background: #172554; border-color: #1e40af; }
+    body.dark-theme .draft-alert p { color: #bfdbfe !important; }
+    body.dark-theme .quick-action-pill { background: #1e293b; border-color: var(--border); color: #f1f5f9; }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+    body { background: var(--bg); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; }
+
+    /* Top Nav */
+    .top-banner {
+      background: linear-gradient(135deg, #064e3b 0%, #047857 100%);
+      color: white; padding: 12px 24px; display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .banner-btn {
+      background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.4);
+      color: white; padding: 6px 14px; border-radius: 8px; font-size: 13px; font-weight: 600;
+      text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
+    }
+    .banner-btn:hover { background: white; color: var(--primary); }
+
+    .app-container { display: flex; flex: 1; height: calc(100vh - 54px); overflow: hidden; }
+
+    /* Sidebar */
+    .sidebar { width: 260px; background: var(--sidebar-bg); color: white; display: flex; flex-direction: column; flex-shrink: 0; }
+    .sidebar-brand { padding: 20px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
+    .brand-logo-box { width: 38px; height: 38px; background: white; border-radius: 10px; display: grid; place-items: center; color: var(--primary); font-weight: 800; }
+    .sidebar-section { padding: 16px 12px 6px 12px; }
+    .sidebar-label { font-size: 11px; font-weight: 700; text-transform: uppercase; color: rgba(255, 255, 255, 0.45); padding: 0 12px 6px; }
+    .sidebar-link { display: flex; align-items: center; gap: 12px; padding: 9px 12px; border-radius: 10px; color: rgba(255, 255, 255, 0.75); text-decoration: none; font-size: 13.5px; font-weight: 500; }
+    .sidebar-link:hover { background: var(--sidebar-hover); color: white; }
+    .sidebar-link.active { background: var(--sidebar-active); color: white; font-weight: 600; }
+
+    .main-content { flex: 1; overflow-y: auto; padding: 28px; max-width: 1350px; margin: 0 auto; width: 100%; }
+
+    /* Drafts alert */
+    .draft-alert {
+      background: #eff6ff; border: 1px solid #bfdbfe; border-radius: var(--radius-md);
+      padding: 14px 18px; display: flex; align-items: center; justify-content: space-between;
+      gap: 16px; margin-bottom: 24px;
+    }
+
+    /* Welcome Header */
+    .welcome-header { margin-bottom: 24px; }
+    .welcome-header h2 { font-size: 26px; font-weight: 800; color: var(--text-main); letter-spacing: -0.4px; }
+    .welcome-header p { font-size: 14px; color: var(--text-muted); margin-top: 4px; }
+
+    /* Primary Level 1 Cards */
+    .primary-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-bottom: 30px; }
+    .primary-card {
+      background: white; border: 1.5px solid var(--border); border-radius: var(--radius-lg);
+      padding: 22px; text-decoration: none; color: inherit; display: flex; flex-direction: column;
+      justify-content: space-between; transition: all 0.2s ease; position: relative;
+    }
+    .primary-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); border-color: #cbd5e1; }
+    .primary-card.highlight {
+      border: 2px solid var(--primary); background: linear-gradient(to bottom, #ffffff, #f0fdf4);
+    }
+    .primary-badge {
+      position: absolute; top: 16px; right: 16px; font-size: 11px; font-weight: 700;
+      background: #dcfce7; color: #15803d; padding: 3px 8px; border-radius: 6px;
+    }
+    .primary-icon {
+      width: 46px; height: 46px; border-radius: 12px; display: grid; place-items: center;
+      margin-bottom: 14px;
+    }
+
+    /* Quick Launch Formats Widget */
+    .widget-container {
+      background: white; border: 1px solid var(--border); border-radius: var(--radius-xl);
+      padding: 24px; box-shadow: var(--shadow-sm); margin-bottom: 30px;
+    }
+    .widget-header {
+      display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px;
+    }
+    .widget-title h3 { font-size: 17px; font-weight: 700; color: var(--text-main); }
+    .widget-title p { font-size: 13px; color: var(--text-muted); }
+
+    .quick-formats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; }
+    .quick-format-tile {
+      background: #f8fafc; border: 1px solid var(--border); border-radius: var(--radius-md);
+      padding: 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      transition: all 0.15s ease;
+    }
+    .quick-format-tile:hover { background: white; border-color: #cbd5e1; box-shadow: var(--shadow-sm); }
+
+    .btn {
+      padding: 7px 14px; border-radius: 8px; font-size: 12.5px; font-weight: 600;
+      cursor: pointer; border: 1px solid transparent; text-decoration: none; display: inline-flex;
+      align-items: center; gap: 6px;
+    }
+    .btn-emerald { background: var(--primary); color: white; }
+    .btn-emerald:hover { background: var(--primary-hover); }
+    .btn-outline { background: white; border-color: var(--border); color: var(--text-main); }
+  </style>
+</head>
+<body>
+
+  <header class="top-banner">
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <div class="banner-brand-pill">
+        <img src="assets/brand/coheart-logo.png" alt="CoHeart Foundation Logo" class="banner-logo-img">
+        <span class="banner-brand-title">CoHeart</span>
+      </div>
+      <span style="background: rgba(255,255,255,0.25); padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 700;">PROTOTYPE 2</span>
+      <h2 style="font-size: 15px; font-weight: 700;">Dashboard Quick-Launch & 1-Click Entry</h2>
+    </div>
+    <div style="display: flex; gap: 8px; align-items: center;">
+      <a href="audit-table.html" class="banner-btn" style="background: white; color: var(--primary);"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bar-chart-3 "  aria-hidden="true"><path d="M3 3v16a2 2 0 0 0 2 2h16"></path><path d="M18 17V9"></path><path d="M13 17V5"></path><path d="M8 17v-3"></path></svg> Click Audit Table</a>
+      <a href="index.html" class="banner-btn"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right "  aria-hidden="true"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg> Master Hub</a>
+      <a href="formats-hub.html" class="banner-btn"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right "  aria-hidden="true"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg> Full Directory</a>
+      <a href="click-comparison.html" class="banner-btn"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right "  aria-hidden="true"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg> Simulator</a>
+      <button class="banner-btn" onclick="toggleDarkMode()" style="background: rgba(0,0,0,0.3); cursor: pointer;">
+        <span id="dark-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-moon "  aria-hidden="true"><path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"></path></svg></span> Dark
+      </button>
+    </div>
+  </header>
+
+  <div class="app-container">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <a href="dashboard.html" class="sidebar-brand-plate" title="CoHeart Foundation Workspace">
+          <img
+            src="assets/brand/coheart-logo.png"
+            alt="CoHeart Foundation Workspace"
+            width="871"
+            height="559"
+            class="sidebar-logo-img"
+          />
+        </a>
+      </div>
+      <div class="sidebar-section">
+        <p class="sidebar-label">Workspace</p>
+        <a class="sidebar-link active" href="dashboard-direct.html">Dashboard</a>
+        <a class="sidebar-link" href="formats-hub.html">Formats Hub</a>
+        <a class="sidebar-link" href="#">Daily Work Entry</a>
+        <a class="sidebar-link" href="#">My Work</a>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <!-- 1-Click Resume Draft Alert -->
+      <div class="draft-alert">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <svg width="22" height="22" fill="none" stroke="#2563eb" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <div>
+            <p style="font-size: 13.5px; font-weight: 700; color: #1e3a8a;">Incomplete Draft Saved (Dropout Follow-up)</p>
+            <p style="font-size: 12px; color: #3b82f6;">Started today at 08:45 AM · 4 of 6 fields completed</p>
+          </div>
+        </div>
+        <button class="btn btn-emerald" onclick="alert('Resuming saved draft in 1 click!')">Resume Draft</button>
+      </div>
+
+      <!-- Role Switcher & Header -->
+      <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+        <div class="welcome-header" style="margin-bottom: 0;">
+          <h2 id="welcome-name">Welcome back, Sunil Patro</h2>
+          <p id="welcome-role">Field Coordinator · HerEcho & CareS · 1-click access to your daily delivery workflows</p>
+        </div>
+        <div style="display: flex; gap: 6px; background: rgba(0,0,0,0.06); padding: 4px; border-radius: 10px;">
+          <button id="dash-emp-btn" class="btn btn-emerald" style="padding: 5px 12px; font-size: 12px;" onclick="switchDashRole('employee')">Employee View</button>
+          <button id="dash-adm-btn" class="btn btn-outline" style="padding: 5px 12px; font-size: 12px;" onclick="switchDashRole('admin')">Admin View</button>
+        </div>
+      </div>
+
+      <!-- 1-Click Role-Aware Quick Action Strip -->
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px;">
+        <button onclick="alert('Attendance Punched In! GPS verified.')" class="quick-action-pill" style="display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-radius: 12px; border: 1px solid var(--border); background: white; cursor: pointer; text-align: left; transition: all 0.15s;">
+          <div style="width: 32px; height: 32px; border-radius: 8px; background: #ecfdf5; color: #10b981; display: grid; place-items: center; font-size: 16px;"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin "  aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg></div>
+          <div>
+            <strong style="display: block; font-size: 13px; color: var(--text-main);">Punch In Today</strong>
+            <span style="font-size: 11px; color: var(--text-muted);">1-Click GPS Verified</span>
+          </div>
+        </button>
+
+        <a href="formats-hub.html" class="quick-action-pill" style="display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-radius: 12px; border: 1px solid var(--border); background: white; text-decoration: none; transition: all 0.15s;">
+          <div style="width: 32px; height: 32px; border-radius: 8px; background: #eff6ff; color: #3b82f6; display: grid; place-items: center; font-size: 16px;"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clipboard "  aria-hidden="true"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"></rect><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path></svg></div>
+          <div>
+            <strong style="display: block; font-size: 13px; color: var(--text-main);">+ New Record</strong>
+            <span style="font-size: 11px; color: var(--text-muted);">Assigned Formats Hub</span>
+          </div>
+        </a>
+
+        <button onclick="alert('Opening Quick Leave Form (1 click)')" class="quick-action-pill" style="display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-radius: 12px; border: 1px solid var(--border); background: white; cursor: pointer; text-align: left; transition: all 0.15s;">
+          <div style="width: 32px; height: 32px; border-radius: 8px; background: #fef3c7; color: #f59e0b; display: grid; place-items: center; font-size: 16px;"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-palmtree "  aria-hidden="true"><path d="M13 8c0-2.76-2.46-5-5.5-5S2 5.24 2 8h2l1-1 1 1h4"></path><path d="M13 7.14A5.82 5.82 0 0 1 16.5 6c3.04 0 5.5 2.24 5.5 5h-3l-1-1-1 1h-3"></path><path d="M5.89 9.71c-2.15 2.15-2.3 5.47-.35 7.43l4.24-4.25.7-.7.71-.71 2.12-2.12c-1.95-1.96-5.27-1.8-7.42.35"></path><path d="M11 15.5c.5 2.5-.17 4.5-1 6.5h4c2-5.5-.5-12-1-14"></path></svg></div>
+          <div>
+            <strong style="display: block; font-size: 13px; color: var(--text-main);">Request Leave</strong>
+            <span style="font-size: 11px; color: var(--text-muted);">Instant Modal Request</span>
+          </div>
+        </button>
+
+        <button onclick="alert('Opening Pending Approvals Drawer: 3 items waiting')" class="quick-action-pill" style="display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-radius: 12px; border: 1px solid var(--border); background: white; cursor: pointer; text-align: left; transition: all 0.15s;">
+          <div style="width: 32px; height: 32px; border-radius: 8px; background: #fef2f2; color: #ef4444; display: grid; place-items: center; font-size: 16px;"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bell "  aria-hidden="true"><path d="M10.268 21a2 2 0 0 0 3.464 0"></path><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"></path></svg></div>
+          <div>
+            <strong style="display: block; font-size: 13px; color: var(--text-main);">Approvals (3)</strong>
+            <span style="font-size: 11px; color: var(--text-muted);">Review in 1 Click</span>
+          </div>
+        </button>
+      </div>
+
+      <!-- Level 1 Action Cards with Direct 'Formats & Data Entry' -->
+      <div class="primary-cards">
+        <!-- New Direct Formats Launcher Card -->
+        <a href="formats-hub.html" class="primary-card highlight">
+          <span class="primary-badge">1-Click Launch</span>
+          <div>
+            <div class="primary-icon" style="background: #dcfce7; color: #15803d;">
+              <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><path d="m9 15 2 2 4-4"/></svg>
+            </div>
+            <h3 style="font-size: 18px; font-weight: 800; color: #064e3b; margin-bottom: 6px;">Formats & Data Entry</h3>
+            <p style="font-size: 13px; color: var(--text-muted); line-height: 1.4;">
+              Access your 3 assigned field forms directly. View records, submit daily attendance, or start a new entry.
+            </p>
+          </div>
+          <div style="margin-top: 20px; font-size: 12.5px; font-weight: 700; color: var(--primary);">
+            Open Formats Hub <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right "  aria-hidden="true"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+          </div>
+        </a>
+
+        <!-- Organisation Card -->
+        <a href="#" class="primary-card">
+          <div>
+            <div class="primary-icon" style="background: #e0e7ff; color: #4338ca;">
+              <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            </div>
+            <h3 style="font-size: 18px; font-weight: 800; color: var(--text-main); margin-bottom: 6px;">Organisation & Pillars</h3>
+            <p style="font-size: 13px; color: var(--text-muted); line-height: 1.4;">
+              Interventions structure, employee records, approvals workflows, and programme governance.
+            </p>
+          </div>
+          <div style="margin-top: 20px; font-size: 12.5px; font-weight: 600; color: var(--text-muted);">
+            View Organisation <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right "  aria-hidden="true"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+          </div>
+        </a>
+
+        <!-- Drive Card -->
+        <div class="primary-card" style="opacity: 0.85;">
+          <span style="position: absolute; top: 16px; right: 16px; font-size: 11px; background: #f1f5f9; color: #64748b; padding: 2px 7px; border-radius: 4px;">Upcoming</span>
+          <div>
+            <div class="primary-icon" style="background: #f0fdf4; color: #047857;">
+              <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+            </div>
+            <h3 style="font-size: 18px; font-weight: 800; color: var(--text-main); margin-bottom: 6px;">Drive (Volunteers)</h3>
+            <p style="font-size: 13px; color: var(--text-muted); line-height: 1.4;">
+              Community volunteer campaigns, drive events, volunteer verification, and outreach initiatives.
+            </p>
+          </div>
+          <div style="margin-top: 20px; font-size: 12.5px; font-weight: 600; color: #94a3b8;">
+            Configuring <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right "  aria-hidden="true"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Launch Formats Widget on Dashboard -->
+      <div class="widget-container">
+        <div class="widget-header">
+          <div class="widget-title">
+            <h3>My Active Formats (Direct Entry)</h3>
+            <p>Skip the 8-step navigation hierarchy: Record directly into your assigned forms.</p>
+          </div>
+          <a href="formats-hub.html" class="btn btn-outline">View All (8 Formats)</a>
+        </div>
+
+        <div class="quick-formats-grid">
+          <!-- Tile 1 -->
+          <div class="quick-format-tile">
+            <div>
+              <p style="font-size: 14px; font-weight: 700; color: var(--text-main);">Dropout School Follow-up</p>
+              <p style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">HerEcho · School Program</p>
+            </div>
+            <button class="btn btn-emerald" onclick="alert('Opening Dropout Follow-up Form in 1 click!')">
+              + Record
+            </button>
+          </div>
+
+          <!-- Tile 2 -->
+          <div class="quick-format-tile">
+            <div>
+              <p style="font-size: 14px; font-weight: 700; color: var(--text-main);">Student & Parent Counseling</p>
+              <p style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">HerEcho · School Program</p>
+            </div>
+            <button class="btn btn-emerald" onclick="alert('Opening Counseling Form in 1 click!')">
+              + Record
+            </button>
+          </div>
+
+          <!-- Tile 3 -->
+          <div class="quick-format-tile">
+            <div>
+              <p style="font-size: 14px; font-weight: 700; color: var(--text-main);">Therapy Session Log</p>
+              <p style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">Spectrum · Early Screening</p>
+            </div>
+            <button class="btn btn-emerald" onclick="alert('Opening Therapy Session Form in 1 click!')">
+              + Record
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+  <script>
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-theme');
+      const isDark = document.body.classList.contains('dark-theme');
+      document.getElementById('dark-icon').innerText = isDark ? '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sun "  aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg>' : '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-moon "  aria-hidden="true"><path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"></path></svg>';
+    }
+
+    function switchDashRole(role) {
+      const empBtn = document.getElementById('dash-emp-btn');
+      const admBtn = document.getElementById('dash-adm-btn');
+      const nameEl = document.getElementById('welcome-name');
+      const roleEl = document.getElementById('welcome-role');
+
+      if (role === 'admin') {
+        admBtn.className = 'btn btn-emerald';
+        empBtn.className = 'btn btn-outline';
+        nameEl.innerText = 'Welcome back, Vikram Reddy';
+        roleEl.innerText = 'Master Administrator · Full organization governance · 1-click global controls';
+      } else {
+        empBtn.className = 'btn btn-emerald';
+        admBtn.className = 'btn btn-outline';
+        nameEl.innerText = 'Welcome back, Sunil Patro';
+        roleEl.innerText = 'Field Coordinator · HerEcho & CareS · 1-click access to your daily delivery workflows';
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>CoHeart Workspace — Sign In</title>
+  <link rel="icon" type="image/svg+xml" href="assets/brand/favicon.svg">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/brand/apple-touch-icon-180.png">
+  <link rel="manifest" href="assets/brand/manifest.webmanifest">
+  <meta name="theme-color" content="#2d6338">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="CoHeart">
+  <link rel="stylesheet" href="vendor/fontawesome/css/all.min.css">
+  <link rel="stylesheet" href="app.css">
+  <script src="vendor/lucide/lucide.min.js"></script>
+  <script src="app.js" defer></script>
+</head>
+<body style="display: flex; align-items: center; justify-content: center; height: 100vh; height: 100dvh; overflow-y: auto; overscroll-behavior: contain; background: var(--bg); padding: 20px;">
+
+  <div style="max-width: 440px; width: 100%; margin: auto;">
+    <!-- Top prototype badge -->
+    <div style="text-align: center; margin-bottom: 20px;">
+      <a href="index.html" class="back-link" style="justify-content: center;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left" aria-hidden="true" style="margin-right: 4px;"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg> Back to Master Sitemap Hub
+      </a>
+    </div>
+
+    <div class="form-card" style="box-shadow: var(--shadow-lg); padding: 32px 28px;">
+      <!-- Real Production Logo with Dark Mode Invert -->
+      <div style="text-align: center; margin-bottom: 20px;">
+        <img
+          src="assets/brand/coheart-logo.png"
+          alt="CoHeart Foundation Workspace"
+          width="871"
+          height="559"
+          class="login-logo-img"
+        />
+        <h1 style="font-size: 20px; font-weight: 800; color: var(--text-main); margin-top: 4px;">Sign in to your workspace</h1>
+        <p style="font-size: 13px; color: var(--text-muted); margin-top: 2px;">Programme delivery, people and MIS in one workspace</p>
+      </div>
+
+      <!-- 1-Click Role Logins for Fast Testing -->
+      <div style="background: var(--primary-soft); border: 1px solid var(--primary-border); border-radius: 10px; padding: 14px; margin-bottom: 20px;">
+        <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--primary); letter-spacing: 0.5px;">1-Click Instant Sign-In:</span>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px;">
+          <a href="dashboard.html" onclick="switchRole('employee')" class="btn btn-primary btn-sm" style="text-decoration: none;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user" aria-hidden="true" style="margin-right: 4px;"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> Sunil (Worker)
+          </a>
+          <a href="dashboard.html" onclick="switchRole('admin')" class="btn btn-outline btn-sm" style="text-decoration: none; border-color: var(--primary); color: var(--primary);">
+            <i class="fa-solid fa-user-tie" aria-hidden="true" style="margin-right: 4px;"></i> Vikram (Admin)
+          </a>
+        </div>
+      </div>
+
+      <form action="dashboard.html" method="GET">
+        <div class="form-group">
+          <label class="form-label">Work Email / Staff ID</label>
+          <input type="email" class="form-input" value="sunil.patro@coheart.org" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" style="display: flex; justify-content: space-between;">
+            Password
+            <a href="#" style="font-size: 11.5px; color: var(--primary); text-decoration: none;" onclick="alert('Password reset link sent to registered email.')">Forgot?</a>
+          </label>
+          <input type="password" class="form-input" value="••••••••••••" required />
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 10px; font-size: 15px;">
+          Sign In to CoHeart <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right" aria-hidden="true" style="margin-left: 4px;"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+        </button>
+      </form>
+    </div>
+  </div>
+
+</body>
+</html>
